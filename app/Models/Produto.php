@@ -9,5 +9,6 @@ class Produto extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nome', 'descricao', 'preco'];
+    // Campos que podem ser preenchidos via mass assignment
+    protected $fillable = ['nome', 'descricao', 'estoque'];
 }

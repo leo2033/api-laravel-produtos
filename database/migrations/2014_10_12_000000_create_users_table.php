@@ -4,33 +4,27 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class AddRoleToUsersTable extends Migration
 {
     /**
-     * Run the migrations.
-     *
-     * @return void
+     * Executa as migrations.
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
-            $table->timestamps();
+        Schema::table('users', function (Blueprint $table) {
+            // Adiciona a coluna 'role' logo após o campo 'email'
+            $table->string('role')->default('user')->after('email');
         });
     }
 
     /**
-     * Reverse the migrations.
-     *
-     * @return void
+     * Reverte as migrations.
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('role');
+        });
     }
-};
+}
+

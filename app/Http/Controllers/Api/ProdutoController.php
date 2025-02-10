@@ -1,69 +1,54 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Produto;
 
 class ProdutoController extends Controller
 {
-    // Listar todos os produtos (GET /api/produtos)
+    /**
+     * Exibe a lista de produtos.
+     */
     public function index()
     {
-        return response()->json(Produto::all(), 200);
+        // Recupera todos os produtos do banco de dados
+        $produtos = Produto::all();
+        // Para este exemplo, vamos retornar JSON.
+        // Em uma aplicação real com React, você poderá consumir esses endpoints.
+        return response()->json($produtos);
     }
 
-    // Criar um novo produto (POST /api/produtos)
+    /**
+     * Armazena um novo produto.
+     */
     public function store(Request $request)
     {
+        // Validação dos dados
         $validatedData = $request->validate([
-            'nome' => 'required|string|max:255',
+            'nome'      => 'required|string|max:255',
             'descricao' => 'nullable|string',
-            'preco' => 'required|numeric',
+            'estoque'   => 'required|integer|min:0',
         ]);
 
+        // Cria o produto
         $produto = Produto::create($validatedData);
-        return response()->json($produto, 201);
+
+        return response()->json(['message' => 'Produto criado com sucesso!', 'produto' => $produto], 201);
     }
 
-    // Exibir um produto específico (GET /api/produtos/{id})
-    public function show($id)
-    {
-        $produto = Produto::find($id);
-        if (!$produto) {
-            return response()->json(['message' => 'Produto não encontrado'], 404);
-        }
-        return response()->json($produto, 200);
-    }
-
-    // Atualizar um produto (PUT/PATCH /api/produtos/{id})
-    public function update(Request $request, $id)
-    {
-        $produto = Produto::find($id);
-        if (!$produto) {
-            return response()->json(['message' => 'Produto não encontrado'], 404);
-        }
-
-        $validatedData = $request->validate([
-            'nome' => 'sometimes|required|string|max:255',
-            'descricao' => 'sometimes|nullable|string',
-            'preco' => 'sometimes|required|numeric',
-        ]);
-
-        $produto->update($validatedData);
-        return response()->json($produto, 200);
-    }
-
-    // Deletar um produto (DELETE /api/produtos/{id})
+    /**
+     * Exclui um produto.
+     */
     public function destroy($id)
     {
         $produto = Produto::find($id);
+
         if (!$produto) {
             return response()->json(['message' => 'Produto não encontrado'], 404);
         }
 
         $produto->delete();
-        return response()->json(['message' => 'Produto removido'], 200);
+        return response()->json(['message' => 'Produto excluído com sucesso!'], 200);
     }
 }

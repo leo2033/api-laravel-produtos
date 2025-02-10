@@ -1,18 +1,18 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+use Inertia\Inertia;
 
 Route::get('/', function () {
-    return view('welcome');
+    return Inertia::render('Welcome');
 });
+
+// Grupo de rotas que requer autenticação
+Route::middleware(['auth'])->group(function () {
+    // Rota para a página de gerenciamento de produtos
+    Route::get('/produtos', function () {
+        return Inertia::render('Products'); // O componente Products será buscado em resources/js/Pages/Products.jsx
+    })->name('produtos');
+});
+
+require __DIR__.'/auth.php';
